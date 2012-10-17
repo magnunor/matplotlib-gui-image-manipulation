@@ -1,0 +1,1 @@
+Add possibility to remove points in getPoints. Second mouse button?
