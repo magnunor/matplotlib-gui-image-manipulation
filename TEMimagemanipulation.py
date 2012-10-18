@@ -1,11 +1,14 @@
-from matplotlib.widgets import  RectangleSelector
+from matplotlib.widgets import RectangleSelector
 import matplotlib.pyplot as plt
 import numpy as np
+
 class PointsBuilder:
   def __init__(self, data):
+    self.data = data
     fig = plt.figure()
+    fig.suptitle("Select points by using the left mouse button.\nRemove the previous point by using the right mouse button.")
     self.ax = fig.add_subplot(111)
-    self.ax.imshow(data)
+    self.ax.imshow(self.data)
     self.xs = []
     self.ys = []
     self.cid = self.ax.figure.canvas.mpl_connect('button_press_event', self)
@@ -14,10 +17,17 @@ class PointsBuilder:
 
   def __call__(self, event):
     if event.inaxes!=self.ax.axes: return
-    self.xs.append(event.xdata)
-    self.ys.append(event.ydata)
+    if event.button == 1:
+      self.xs.append(event.xdata)
+      self.ys.append(event.ydata)
+    else:
+      if not len(self.xs) == 0:
+        self.xs.pop()
+        self.ys.pop()
     xlim = self.ax.get_xlim()
     ylim = self.ax.get_ylim()
+    self.ax.clear()
+    self.ax.imshow(self.data)
     for xpoint,ypoint in zip(self.xs,self.ys):
       self.ax.plot(
           [xpoint],
