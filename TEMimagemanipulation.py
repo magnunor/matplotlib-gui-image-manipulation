@@ -3,12 +3,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class PointsBuilder:
-  def __init__(self, data):
+  def __init__(self, data, imshow = True):
+    self.imshow = imshow
+
     self.data = data
     fig = plt.figure()
     fig.suptitle("Select points by using the left mouse button.\nRemove the previous point by using the right mouse button.")
     self.ax = fig.add_subplot(111)
-    self.ax.imshow(self.data)
+    if self.imshow == True:
+      self.ax.imshow(self.data)
+    else:
+      self.ax.plot(self.data)
     self.xs = []
     self.ys = []
     self.cid = self.ax.figure.canvas.mpl_connect('button_press_event', self)
@@ -27,7 +32,10 @@ class PointsBuilder:
     xlim = self.ax.get_xlim()
     ylim = self.ax.get_ylim()
     self.ax.clear()
-    self.ax.imshow(self.data)
+    if self.imshow == True:
+      self.ax.imshow(self.data)
+    else:
+      self.ax.plot(self.data)
     for xpoint,ypoint in zip(self.xs,self.ys):
       self.ax.plot(
           [xpoint],
@@ -80,8 +88,8 @@ def getSubImage(data):
   pos2 = tempSubImage.x2, tempSubImage.y2
   return(subImage, pos1, pos2)
 
-def getPoints(data):
-  tempPoints = PointsBuilder(data)
+def getPoints(data, imshow = True):
+  tempPoints = PointsBuilder(data, imshow)
   #Matplotlib and numpy defines x and y orthogonal
   #to eachother. Prompting this switch.
   xpoints = tempPoints.ys
